@@ -8,6 +8,7 @@ import nLayeredDemo.dataAccess.abstracts.UserDao;
 import nLayeredDemo.entities.concretes.User;
 
 public class GoogleManagerAdapter implements AuthService {
+	GoogleManager manager = new GoogleManager();
 	private UserDao userDao;
 	
 	public GoogleManagerAdapter(UserDao userDao) {
@@ -20,24 +21,25 @@ public class GoogleManagerAdapter implements AuthService {
 	}
 
 	@Override
-	public void login(String mail, String password) {		
-		List<User> userList = this.getAll();
-		for (User iterator : userList)
-		{
-			if (iterator.getMail().equals(mail) != true)
-			{
-				System.out.println("Mail address is wrong.");
-				return;
-			}
-			if (iterator.getPassword().equals(password) != true)
-			{
-				System.out.println("Password is wrong.");
-				return;
-			}
-		}
+	public void login(String mail, String password) {
 		
-		GoogleManager manager = new GoogleManager();
-		manager.login(mail, password);
+		// no checks, Google services doing checks here
+		this.manager.login(mail, password);
 	}
 
+	@Override
+	public boolean register(User user){
+		if (this.manager.login(user.getMail(), user.getPassword()))
+		{
+			// getting data from Google services
+			User newUser = new User(this.manager.getFirstName(), this.manager.getLastName(), user.getMail(), user.getPassword());
+			this.userDao.add(newUser);
+			
+			System.out.println("Registration with Google services was successful.");
+			
+			return true;
+		}
+		
+		return false;
+	}
 }

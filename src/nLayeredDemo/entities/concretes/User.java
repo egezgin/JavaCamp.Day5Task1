@@ -10,6 +10,11 @@ public class User implements Entity {
 	private String password;
 	private boolean accountActivated;
 	
+	public User(String mail, String password) {
+		this.mail = mail;
+		this.password = password;
+	}
+	
 	public User(String firstName, String lastName, String mail, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;

@@ -9,12 +9,9 @@ import nLayeredDemo.entities.concretes.User;
 
 public class UserManager implements UserService {
 	private UserDao userDao;
-	private int minimalPasswordLength = 6;
-	private int minimalNameLength = 2;
 	private AuthService authService;
 	
 	public UserManager(UserDao userDao, AuthService authService) {
-		super();
 		this.userDao = userDao;
 		this.authService = authService;
 	}
@@ -22,44 +19,10 @@ public class UserManager implements UserService {
 	@Override
 	public void register(User user) {
 		System.out.println("trying to register a new account...");
-		if (user.getPassword().length() < this.minimalPasswordLength)			
+		if (this.authService.register(user))
 		{
-			System.out.println("Password length is too small. Minimal password length is " + this.minimalPasswordLength + ".");
-			return;
+			this.sendConfirmationMessage();
 		}
-		
-		// see https://howtodoinjava.com/java/regex/java-regex-validate-email-address/
-		if (user.getMail().matches("^[A-Za-z0-9+_.-]+@(.+)$") == false)
-		{
-			System.out.println("Mail address doesn't match right pattern.");
-			return;
-		}
-		
-		List<User> userList = this.getAll();
-		for (User iterator : userList)
-		{
-			if (user.getMail().equals(iterator.getMail()) == true)
-			{
-				System.out.println("Mail address already in use.");
-				return;
-			}
-		}
-		
-		if (user.getFirstName().length() < this.minimalNameLength)			
-		{
-			System.out.println("First name length is too small. Minimal name length is " + this.minimalNameLength + ".");
-			return;
-		}
-		
-		if (user.getLastName().length() < this.minimalNameLength)			
-		{
-			System.out.println("Last name length is too small. Minimal name length is " + this.minimalNameLength + ".");
-			return;
-		}
-		
-		this.userDao.add(user);	
-		
-		this.sendConfirmationMessage();
 	}
 	
 	@Override

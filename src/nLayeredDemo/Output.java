@@ -11,8 +11,8 @@ import nLayeredDemo.entities.concretes.User;
 public class Output {
 
 	public static void main(String[] args) {
-		UserDao userDao1 = new HibernateUserDao();
-		UserService userService1 = new UserManager(userDao1, new AuthManager(userDao1));
+		UserDao userDao = new HibernateUserDao();
+		UserService userService1 = new UserManager(userDao, new AuthManager(userDao));
 		
 		User user1 = new User("E", "Gezgin", "egezgin@outlook.com", "1234567");
 		userService1.register(user1);		
@@ -37,16 +37,14 @@ public class Output {
 		userService1.login("egezgin@outlook.com", "123");
 		userService1.login("egezgin@outlook.com", "1234567");
 		
-		UserDao userDao2 = new HibernateUserDao();
-		UserService userService2 = new UserManager(userDao2, new GoogleManagerAdapter(userDao2));
+		UserService userService2 = new UserManager(userDao, new GoogleManagerAdapter(userDao));
 		
-		User user6 = new User("Emrah", "Gezgin", "egezgin@outlook.com", "1234567");
+		User user6 = new User("egezgin@gmail.com", "1234567");
 		userService2.register(user6);
 		userService2.accountVerificationLinkClicked(user6);
 		
-		userService2.login("egezgin@outlook.com", "1234");
-		userService2.login("@outlook.com", "1234567");
-		userService2.login("egezgin@outlook.com", "1234567");
+		userService2.login("egezgin@gmail.com", "1234567");
+		userService1.login("egezgin@gmail.com", "1234567");
 	}
 
 }
